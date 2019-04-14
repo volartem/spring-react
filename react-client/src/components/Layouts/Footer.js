@@ -6,13 +6,13 @@ import '../../styles/Header.css';
 class Footer extends Component {
     render() {
         return (
-            <footer className="App-header">
+            <footer className="App-header" style={{marginTop: '10px', }}>
                 <div className={'container'}>
                     <div className={'row'}>
                         <div className={'col-md-2'}>
                             <img src={logo} className="App-logo" alt="logo"/>
                         </div>
-                        <div className={'col-md-8'} style={{marginTop: '15px'}}>
+                        <div className={'col-md-8'}>
                             Created by <a
                             className="App-link"
                             href="https://github.com/volartem"
