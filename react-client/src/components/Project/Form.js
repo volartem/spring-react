@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {createProject} from '../../actions/projectActions';
 
 
 class Form extends Component {
@@ -32,6 +35,7 @@ class Form extends Component {
         };
 
         console.log(newProject);
+        this.props.createProject(newProject, this.props.history);
     }
 
     render() {
@@ -108,4 +112,11 @@ class Form extends Component {
     }
 }
 
-export default Form;
+Form.propTypes = {
+    createProject: PropTypes.func.isRequired
+};
+
+export default connect(
+    null,
+    { createProject }
+)(Form);
