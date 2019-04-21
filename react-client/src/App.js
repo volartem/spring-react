@@ -5,9 +5,10 @@ import Footer from "./components/Layouts/Footer";
 import {BrowserRouter, Route} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-grid.css';
-import Form from './components/Project/Form'
 import {Provider} from "react-redux";
 import store from "./store";
+import UpdateProject from "./components/Project/UpdateProject";
+import CreateProject from "./components/Project/CreateProject";
 
 
 class App extends Component {
@@ -18,7 +19,8 @@ class App extends Component {
                     <div className="App">
                         <Header/>
                         <Route exact path={'/'} component={Dashboard}/>
-                        <Route exact path={'/create-project'} component={Form}/>
+                        <Route exact path={'/create'} component={CreateProject}/>
+                        <Route exact path="/update/:id" component={UpdateProject} />
                         <Footer/>
                     </div>
                 </BrowserRouter>

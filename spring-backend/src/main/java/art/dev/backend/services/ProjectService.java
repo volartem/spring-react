@@ -2,9 +2,12 @@ package art.dev.backend.services;
 
 import art.dev.backend.domains.Project;
 import art.dev.backend.exceptions.ProjectIdException;
+import art.dev.backend.exceptions.ProjectNotFoundException;
 import art.dev.backend.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class ProjectService {
@@ -14,7 +17,20 @@ public class ProjectService {
 
 
     public Project saveOrUpdate(Project project) {
-
+        if (project.getId() != null) {
+            Project existingProject = projectRepository.findByProjectIdentifier(project.getProjectIdentifier());
+            if (existingProject == null) {
+                throw new ProjectNotFoundException("Project with ID: " + project.getProjectIdentifier() +
+                        " cannot be updated because it doesn't exist");
+            } else {
+                existingProject.setDescription(project.getDescription());
+                existingProject.setProjectName(project.getProjectName());
+                existingProject.setStartDate(project.getStartDate());
+                existingProject.setEndDate(project.getEndDate());
+                existingProject.setUpdatedAt(new Date());
+                project = existingProject;
+            }
+        }
         try {
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             return projectRepository.save(project);
@@ -22,6 +38,7 @@ public class ProjectService {
             throw new ProjectIdException("Project with projectIdentifier " + project.getProjectIdentifier().toUpperCase()
                     + " already exists!");
         }
+
     }
 
 

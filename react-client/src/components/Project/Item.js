@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from 'react-router-dom';
 
 
 class ProjectItem extends Component {
@@ -21,11 +22,11 @@ class ProjectItem extends Component {
                                         <i className="fa fa-flag-checkered pr-1"> Project Board </i>
                                     </li>
                                 </a>
-                                <a href="#" className={'alert alert-success'}>
+                                <Link className={'alert alert-success'} to={`/update/${this.props.project.projectIdentifier}`}>
                                     <li className="btn ">
                                         <i className="fa fa-edit pr-1"> Update Project Info</i>
                                     </li>
-                                </a>
+                                </Link>
                                 <a href="" className={'alert alert-danger'}>
                                     <li className="btn ">
                                         <i className="fa fa-minus-circle pr-1"> Delete Project</i>

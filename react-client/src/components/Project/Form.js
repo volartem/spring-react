@@ -5,28 +5,48 @@ import {createProject} from '../../actions/projectActions';
 
 
 class Form extends Component {
-    constructor() {
+    constructor(props) {
         super();
 
         this.state = {
-            projectName: "",
-            projectIdentifier: "",
-            description: "",
-            start_date: "",
-            end_date: ""
+
+            projectName: props.project.projectName,
+            projectIdentifier: props.project.projectIdentifier,
+            description: props.project.description,
+            start_date: props.project.start_date,
+            end_date: props.project.end_date,
+            errors: {},
+            disabledInput: ""
         };
 
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    //life cycle hooks
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errors) {
+            this.setState({errors: nextProps.errors});
+        }
+        console.log("Form nextProps ", nextProps);
+        this.setState({
+            disabledInput : "disabled",
+            projectName: nextProps.project.projectName,
+            projectIdentifier: nextProps.project.projectIdentifier,
+            description: nextProps.project.description,
+            start_date: nextProps.project.start_date,
+            end_date: nextProps.project.end_date
+        });
+    }
+
     onChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
+        this.setState({[e.target.name]: e.target.value});
     }
 
     onSubmit(e) {
         e.preventDefault();
         const newProject = {
+            id: this.props.project.id,
             projectName: this.state.projectName,
             projectIdentifier: this.state.projectIdentifier,
             description: this.state.description,
@@ -45,8 +65,8 @@ class Form extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-md-8 m-auto">
-                                <h5 className="display-4 text-center">Create Project</h5>
-                                <hr />
+
+                                <hr/>
                                 <form onSubmit={this.onSubmit}>
                                     <div className="form-group">
                                         <input
@@ -64,6 +84,7 @@ class Form extends Component {
                                             className="form-control form-control-lg"
                                             placeholder="Unique Project ID"
                                             name="projectIdentifier"
+                                            disabled = {this.state.disabledInput}
                                             value={this.state.projectIdentifier}
                                             onChange={this.onChange}
                                         />
@@ -101,6 +122,7 @@ class Form extends Component {
                                     <input
                                         type="submit"
                                         className="btn btn-primary btn-block mt-4"
+                                        value={'Send'}
                                     />
                                 </form>
                             </div>
@@ -113,10 +135,15 @@ class Form extends Component {
 }
 
 Form.propTypes = {
-    createProject: PropTypes.func.isRequired
+    createProject: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+    errors: state.errors
+});
+
 export default connect(
-    null,
-    { createProject }
+    mapStateToProps,
+    {createProject}
 )(Form);

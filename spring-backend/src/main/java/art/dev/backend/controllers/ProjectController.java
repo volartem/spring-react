@@ -28,7 +28,7 @@ public class ProjectController {
         ResponseEntity<?> responseEntity = errorService.validateErrors(result);
         if (responseEntity != null) return responseEntity;
         Project projectCreated = projectService.saveOrUpdate(project);
-        return new ResponseEntity<Project>(projectCreated, HttpStatus.CREATED);
+        return new ResponseEntity<>(projectCreated, HttpStatus.CREATED);
 
     }
 

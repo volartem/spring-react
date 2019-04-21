@@ -5,7 +5,7 @@ class CreateButton extends Component {
     render() {
         return (
             <React.Fragment>
-                <Link to={'/create-project'} className={'btn btn-info btn-lg'} >
+                <Link to={'/create'} className={'btn btn-info btn-lg'} >
                     Create project
                 </Link>
             </React.Fragment>
