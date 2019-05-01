@@ -26,3 +26,5 @@ target/
 /build/
 .directory
 .mvn
+
+logs/
