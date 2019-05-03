@@ -2,8 +2,7 @@ package art.dev.backend.security;
 
 import art.dev.backend.domains.User;
 import io.github.cdimascio.dotenv.Dotenv;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -45,8 +44,34 @@ public class JWTokenProvider {
                 .compact();
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true;
+        } catch (SignatureException ex) {
+            System.out.println("Invalid JWT Signature");
+        } catch (MalformedJwtException ex) {
+            System.out.println("Invalid JWT Token");
+        } catch (ExpiredJwtException ex) {
+            System.out.println("Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            System.out.println("Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("JWT claims string is empty");
+        }
+        return false;
+    }
+
+    public Long getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        String id = claims.get("id").toString();
+
+        return Long.parseLong(id);
+    }
+
+
     @PostConstruct
-    private void init(){
+    private void init() {
         Dotenv dotenv = Dotenv.load();
         secret = dotenv.get("JWT_SECRET");
     }
