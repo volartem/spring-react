@@ -1,9 +1,11 @@
 package art.dev.backend.services;
 
 import art.dev.backend.domains.Project;
+import art.dev.backend.domains.User;
 import art.dev.backend.exceptions.ProjectIdException;
 import art.dev.backend.exceptions.ProjectNotFoundException;
 import art.dev.backend.repositories.ProjectRepository;
+import art.dev.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,16 @@ public class ProjectService {
     @Autowired
     ProjectRepository projectRepository;
 
+    @Autowired
+    UserRepository userRepository;
 
-    public Project saveOrUpdate(Project project) {
+    public Project saveOrUpdate(Project project, String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            project.setUser(user);
+            project.setUserCreated(user.getUsername());
+        }
+
         if (project.getId() != null) {
             Project existingProject = projectRepository.findByProjectIdentifier(project.getProjectIdentifier());
             if (existingProject == null) {

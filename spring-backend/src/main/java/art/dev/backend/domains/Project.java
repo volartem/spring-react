@@ -1,6 +1,7 @@
 package art.dev.backend.domains;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -36,6 +37,12 @@ public class Project {
 
     @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updated_at;
+
+    private String userCreated;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
 
     public Project() {
     }
@@ -114,4 +121,19 @@ public class Project {
         this.updated_at = new Date();
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(String userCreated) {
+        this.userCreated = userCreated;
+    }
 }
