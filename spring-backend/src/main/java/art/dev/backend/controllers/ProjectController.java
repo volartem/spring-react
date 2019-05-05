@@ -34,19 +34,19 @@ public class ProjectController {
     }
 
     @GetMapping("")
-    public Iterable<Project> getAllProjects() {
-        return projectService.findAllProjects();
+    public Iterable<Project> getAllProjects(Principal principal) {
+        return projectService.findAllProjectsByUserCreated(principal.getName());
     }
 
     @GetMapping("/{identifier}")
-    public ResponseEntity<?> getProjectByIdentifier(@PathVariable String identifier) {
-        Project project = projectService.findProjectByIdentifier(identifier);
+    public ResponseEntity<?> getProjectByIdentifier(@PathVariable String identifier, Principal principal) {
+        Project project = projectService.findProjectByIdentifier(identifier, principal.getName());
         return new ResponseEntity<Project>(project, HttpStatus.OK);
     }
 
     @DeleteMapping("/{identifier}")
-    public ResponseEntity<?> deleteProjectByIdentifier(@PathVariable String identifier) {
-        Long projectId = projectService.deleteProjectByIdentifier(identifier);
+    public ResponseEntity<?> deleteProjectByIdentifier(@PathVariable String identifier, Principal principal) {
+        Long projectId = projectService.deleteProjectByIdentifier(identifier, principal.getName());
         return new ResponseEntity<Long>(projectId, HttpStatus.OK);
     }
 }

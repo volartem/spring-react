@@ -3,7 +3,6 @@ package art.dev.backend.services;
 import art.dev.backend.domains.Project;
 import art.dev.backend.domains.User;
 import art.dev.backend.exceptions.ProjectIdException;
-import art.dev.backend.exceptions.ProjectNotFoundException;
 import art.dev.backend.repositories.ProjectRepository;
 import art.dev.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +20,17 @@ public class ProjectService {
     UserRepository userRepository;
 
     public Project saveOrUpdate(Project project, String username) {
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-            project.setUser(user);
-            project.setUserCreated(user.getUsername());
-        }
 
         if (project.getId() != null) {
             Project existingProject = projectRepository.findByProjectIdentifier(project.getProjectIdentifier());
-            if (existingProject == null) {
-                throw new ProjectNotFoundException("Project with ID: " + project.getProjectIdentifier() +
-                        " cannot be updated because it doesn't exist");
-            } else {
+
+            // check if project exists for another users
+            if (existingProject != null && !existingProject.getUserCreated().equals(username)) {
+                throw new ProjectIdException("Project identifier '" + existingProject.getProjectIdentifier() + "' has already existed.");
+            }
+
+            // update
+            if (existingProject != null) {
                 existingProject.setDescription(project.getDescription());
                 existingProject.setProjectName(project.getProjectName());
                 existingProject.setStartDate(project.getStartDate());
@@ -42,8 +40,15 @@ public class ProjectService {
             }
         }
         try {
+            // save or create new
+            User user = userRepository.findByUsername(username);
+            if (user != null) {
+                project.setUser(user);
+                project.setUserCreated(user.getUsername());
+            }
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             return projectRepository.save(project);
+
         } catch (Exception e) {
             throw new ProjectIdException("Project with projectIdentifier " + project.getProjectIdentifier().toUpperCase()
                     + " already exists!");
@@ -52,11 +57,15 @@ public class ProjectService {
     }
 
 
-    public Project findProjectByIdentifier(String idetifier) {
+    public Project findProjectByIdentifier(String identifier, String username) {
 
-        Project project = projectRepository.findByProjectIdentifier(idetifier.toUpperCase());
+        Project project = projectRepository.findByProjectIdentifier(identifier.toUpperCase());
         if (project == null) {
-            throw new ProjectIdException("Project identifier '" + idetifier + "' does not exist");
+            throw new ProjectIdException("Project identifier '" + identifier + "' does not exist");
+        }
+
+        if (!project.getUserCreated().equals(username)) {
+            throw new ProjectIdException("Project identifier '" + identifier + "' does not exist for current user");
         }
         return project;
     }
@@ -65,11 +74,12 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public Long deleteProjectByIdentifier(String identifier) {
-        Project currentProject = projectRepository.findByProjectIdentifier(identifier);
-        if (currentProject == null) {
-            throw new ProjectIdException("Cannot delete project with identifier " + identifier + " - it does not exists");
-        }
+    public Iterable<Project> findAllProjectsByUserCreated(String username) {
+        return projectRepository.findAllByUserCreated(username);
+    }
+
+    public Long deleteProjectByIdentifier(String identifier, String username) {
+        Project currentProject = findProjectByIdentifier(identifier, username);
         Long id = currentProject.getId();
         projectRepository.delete(currentProject);
         return id;
