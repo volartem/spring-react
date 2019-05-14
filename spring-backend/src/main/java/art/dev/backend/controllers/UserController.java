@@ -6,6 +6,7 @@ import art.dev.backend.payload.LoginRequest;
 import art.dev.backend.security.JWTokenProvider;
 import art.dev.backend.services.UserService;
 import art.dev.backend.services.ValidationErrorService;
+import art.dev.backend.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,9 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private UserValidator userValidator;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
         ResponseEntity<?> errorMap = validationErrorService.validateErrors(result);
@@ -61,6 +65,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result){
 
+        userValidator.validate(user,result);
         ResponseEntity<?> errorMap = validationErrorService.validateErrors(result);
         if(errorMap != null)return errorMap;
 

@@ -9,6 +9,8 @@ import {Provider} from "react-redux";
 import store from "./store";
 import UpdateProject from "./components/Project/UpdateProject";
 import CreateProject from "./components/Project/CreateProject";
+import Register from "./components/User/Register";
+import Login from "./components/User/Login";
 
 
 class App extends Component {
@@ -19,6 +21,8 @@ class App extends Component {
                     <div className="App">
                         <Header/>
                         <Route exact path={'/'} component={Dashboard}/>
+                        <Route exact path="/register" component={Register} />
+                        <Route exact path="/login" component={Login} />
                         <Route exact path={'/create'} component={CreateProject}/>
                         <Route exact path="/update/:id" component={UpdateProject} />
                         <Footer/>

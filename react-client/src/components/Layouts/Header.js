@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import '../../styles/Header.css';
+import {Link} from "react-router-dom";
 
 
 class Header extends Component {
@@ -7,7 +8,7 @@ class Header extends Component {
         return (
             <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
                 <div className="container">
-                    <span className="navbar-brand" >
+                    <span className="navbar-brand">
                         Project Management
                     </span>
                     <button
@@ -16,7 +17,7 @@ class Header extends Component {
                         data-toggle="collapse"
                         data-target="#mobile-nav"
                     >
-                        <span className="navbar-toggler-icon" />
+                        <span className="navbar-toggler-icon"/>
                     </button>
 
                     <div className="collapse navbar-collapse" id="mobile-nav">
@@ -30,14 +31,14 @@ class Header extends Component {
 
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item">
-                                <a className="nav-link " href="/register">
+                                <Link className="nav-link" to="/register">
                                     Sign Up
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="/login">
+                                <Link className="nav-link" to="/login">
                                     Login
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
