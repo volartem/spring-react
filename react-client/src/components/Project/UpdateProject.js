@@ -53,8 +53,7 @@ UpdateProject.propTypes = {
     project: PropTypes.object.isRequired,
 };
 const mapStateToProps = state => ({
-    project: state.all.project,
-    errors: state.errors
+    project: state.all.project
 });
 
 export default connect(

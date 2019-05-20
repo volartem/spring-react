@@ -11,6 +11,28 @@ import UpdateProject from "./components/Project/UpdateProject";
 import CreateProject from "./components/Project/CreateProject";
 import Register from "./components/User/Register";
 import Login from "./components/User/Login";
+import setJWToken from "./securityUtils/setJWToken";
+import {SET_CURRENT_USER} from "./actions/types";
+import jwt_decode from "jwt-decode";
+import {logout} from "./actions/securityActions";
+
+
+const jwtToken = localStorage.jwtToken;
+
+if (jwtToken) {
+    setJWToken(jwtToken);
+    const decoded_jwtToken = jwt_decode(jwtToken);
+    store.dispatch({
+        type: SET_CURRENT_USER,
+        payload: decoded_jwtToken
+    });
+
+    const currentTime = Date.now() / 1000;
+    if (decoded_jwtToken.exp < currentTime) {
+        store.dispatch(logout());
+        window.location.href = "/";
+    }
+}
 
 
 class App extends Component {
@@ -25,7 +47,7 @@ class App extends Component {
                         <Route exact path="/login" component={Login} />
                         <Route exact path={'/create'} component={CreateProject}/>
                         <Route exact path="/update/:id" component={UpdateProject} />
-                        <Footer/>
+                        {/*<Footer/>*/}
                     </div>
                 </BrowserRouter>
             </Provider>
